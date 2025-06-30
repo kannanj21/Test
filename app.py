@@ -140,4 +140,4 @@ if uploaded_file is not None:
 
         except Exception as e:
             st.error(f"An error occurred during LLM processing: {e}")
-            st.
+            st.info("Ensure your Mistral API key is correct and the PDF content is clear for the LLM to understand.")
