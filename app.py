@@ -3,7 +3,7 @@ import base64
 import io
 import httpx # Import httpx explicitly
 from mistralai.client import MistralClient
-from mistralai.models import ChatMessage
+
 
 
 # --- Mistral AI API Key Setup ---
@@ -108,11 +108,11 @@ if uploaded_file is not None:
         try:
             # Construct the messages for the Mistral API call
             messages = [
-                ChatMessage(
+                mistralai.models.chat.ChatMessage(  # <-- FULLY QUALIFIED PATH HERE
                     role="user",
                     content=[
-                        ChatMessage(type="text", text=PN_LOGIC_PROMPT),
-                        ChatMessage(type="image_url", image_url=f"data:application/pdf;base64,{base64_pdf}")
+                        mistralai.models.chat.ChatMessage(type="text", text=PN_LOGIC_PROMPT), # <-- FULLY QUALIFIED PATH HERE
+                        mistralai.models.chat.ChatMessage(type="image_url", image_url=f"data:application/pdf;base64,{base64_pdf}") # <-- FULLY QUALIFIED PATH HERE
                     ]
                 )
             ]
