@@ -22,16 +22,58 @@ client = MistralClient(api_key=api_key)
 PN_LOGIC_PROMPT = """
 You are an expert system for generating 15-digit part numbers for Cabin Attendant Seats (CAS).
 Your task is to:
-1. Analyze the text of the CAS Definition Document provided below. It contains information about various CAS models, types (WM/FM), and features.
-2. For each CAS (e.g., CAS 11, CAS 13, CAS 37), extract:
-   - Type (WM or FM)
-   - Features like "PBE", "Handset", "Worklight", "Am-Safe", "Schroth", "Coat Hook"
-3. Generate 15-digit part numbers based on strict logic.
-4. Return output as a JSON like:
-{
-  "CAS 11": "2351WS4UAG44ED2",
-  ...
-}
+1.  **Analyze the provided PDF document.** This PDF is a 'CAS Definition Document' and contains information about various Cabin Attendant Seat (CAS) models, including their type (Wall-mounted 'WM' or Floor-mounted 'FM') and specific features listed in tables (Headrest Features, Other Features).
+2.  **For each distinct CAS location (e.g., CAS 11, CAS 13, CAS 33, CAS 37, etc.) identified in the PDF, extract the following key information:**
+    * Its type (WM or FM).
+    * The presence or absence of these specific features:
+        * "PBE" (Protective Breathing Equipment stowage)
+        * "Handset" (e.g., "Handset with Phone cord")
+        * "Worklight" (e.g., "Single Worklight Switch", "Double Worklight Switch")
+        * "Am-Safe triple action"
+        * "Am-safe single action"
+        * "Schroth"
+        * "Coat Hook" (or "Coat holder")
+
+3.  **Generate a 15-digit part number for EACH identified CAS location using the following PRECISE and DETERMINISTIC rules.** Follow these rules exactly for each digit:
+
+    * **First Three Digits:** Always '235'.
+    * **Fourth Digit:**
+        * If the CAS TDU location is Floor mounted (FM), set to '0'.
+        * Otherwise (Wall-mounted WM), set to '1'.
+    * **Fifth Digit:**
+        * If the CAS TDU location is Floor mounted (FM), set to 'F'.
+        * Otherwise (Wall-mounted WM), set to 'W'.
+    * **Sixth Digit:** Always 'S'.
+    * **Seventh Digit:**
+        * If "Schroth" is found in the CAS features, set to '1'.
+        * Else if "Am-Safe triple action" is found, set to '4'.
+        * Else if "Am-safe single action" is found, set to '5'.
+        * If none of these keywords are explicitly found for the CAS, use 'X'.
+    * **Eighth Digit:**
+        * If "PBE" is present for the CAS, set to 'U'.
+        * Else if "PBE" is NOT present BUT "Handset" AND "Worklight" are BOTH present, set to 'A'.
+        * If neither of these conditions is met, use 'X'.
+    * **Ninth Digit:**
+        * If "Coat Hook" or "Coat holder" is found in the CAS features, set to 'E'.
+        * Otherwise, set to 'A'.
+    * **Tenth Digit:** Always 'G'.
+    * **Eleventh Digit:** Always '4'.
+    * **Twelfth Digit:** Always '4'.
+    * **Thirteenth and Fourteenth Digits:** Always 'ED'.
+    * **Fifteenth Digit:** Always '2'.
+
+4.  **Output Format:**
+    Provide the generated part numbers as a JSON object. The keys of the JSON object should be the CAS IDs (e.g., "CAS 11", "CAS 37"), and the values should be their respective 15-digit part numbers. Ensure the JSON is valid and only contains the part numbers. If you cannot determine a specific digit, use 'X' for that digit in the part number.
+
+    Example desirable JSON output structure:
+    ```json
+    {
+      "CAS 11": "2351WS4UAG44ED2",
+      "CAS 13": "2351WS4UAG44ED2",
+      "CAS 15": "2351WS4UAG44ED2",
+      // ... and so on for all identified CAS locations
+    }
+    ```
 """
 
 # --- Streamlit UI ---
