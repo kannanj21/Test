@@ -2,11 +2,11 @@ import streamlit as st
 import base64
 import io
 import httpx # Required for the MistralClient's internal HTTP operations
-# Removed: from mistralai.client import MistralClient # This is the deprecated client
-# REMOVED: from mistralai.models.chat import ChatMessage # REMOVED THIS LINE
-from mistralai.async_client import MistralClient as NewMistralClient # Import the new client
+from mistralai.client import MistralClient # Revert to importing from mistralai.client
+# Removed: from mistralai.async_client import MistralClient as NewMistralClient # No longer needed
+# Removed: from mistralai.models.chat import ChatMessage # No longer needed, using dictionaries directly
 
-# --- Mistral AI API Key (Hardcoded as per your request for testing simplicity) ---
+# --- Mistral AI API Key (Hardcoded for testing simplicity) ---
 # WARNING: This exposes your API key in public code. Use ONLY for temporary, free/test API keys.
 api_key = "VYFuAzmpanni9GvQjQBoVuwRylMd7IOa" # Your API key, hardcoded here.
 
@@ -19,9 +19,9 @@ if api_key == "YOUR_ACTUAL_MISTRAL_AI_API_KEY_GOES_HERE" or not api_key:
 # Use ONLY for temporary testing in controlled environments where you understand the risks.
 insecure_httpx_client = httpx.Client(verify=False)
 
-client = NewMistralClient( # Use the new client here
+client = MistralClient( # Use the client from mistralai.client
     api_key=api_key,
-    httpx_client=insecure_httpx_client
+    httpx_client=insecure_httpx_client # This argument *should* work with the client from mistralai.client
 )
 
 # --- Define the Part Number Generation Logic (as text for the LLM) ---
@@ -99,7 +99,6 @@ if uploaded_file is not None:
     with st.spinner("Sending PDF to LLM and generating part numbers... (This may take a moment)"):
         try:
             # Construct the messages for the Mistral API call using dictionaries
-            # This completely bypasses direct import of ChatMessage class
             messages = [
                 {
                     "role": "user",
@@ -141,8 +140,4 @@ if uploaded_file is not None:
 
         except Exception as e:
             st.error(f"An error occurred during LLM processing: {e}")
-            st.info("Ensure the PDF content is clear for the LLM to understand and the model is accessible.")
-
-st.markdown("---")
-st.info("This application leverages the Mistral AI API to interpret the PDF and generate part numbers based on the detailed rules provided in the prompt. "
-        "Accuracy depends heavily on the LLM's capability and the clarity of the prompt.")
+            st.
