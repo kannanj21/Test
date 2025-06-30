@@ -5,7 +5,7 @@ import json
 from mistralai.client import MistralClient
 from PyPDF2 import PdfReader
 
-# --- Mistral AI API Key (Hardcoded for testing only) ---
+# --- Mistral AI API Key (Hardcoded for testing only)
 api_key = "H8guEVvToOt8VEIRCZSgHgtAMGmVg0Dy"
 
 # --- AGGRESSIVE, INSECURE SSL BYPASS ---
@@ -124,32 +124,7 @@ if uploaded_file:
             st.error(f"❌ Error during LLM processing: {e}")
             st.info("Make sure your API key is valid and the PDF text is clean.")
 
-    # --- DS Finder Section ---
-    st.markdown("## Design Solutions Finder")
-    
-    # Supplier Name Input
-    supplier_name = st.text_input("Enter Supplier Name:")
-    
-    # Door Location Input
-    door_location = st.text_input("Enter Door Location:")
-    
-    # TDU Input
-    tdu = st.text_input("Enter TDU:")
-    
-    # X Distance Input
-    x_distance = st.number_input("Enter X Distance:", min_value=0.0, format="%.2f")
-    
-    # Type of CAS Input (Select Box)
-    cas_type = st.selectbox("Select Type of CAS", ["Wall-mounted", "Floor-mounted"])
 
-    # Display the entered DS Finder details
-    if supplier_name or door_location or tdu or x_distance or cas_type:
-        st.write("### DS Finder Details")
-        st.write(f"**Supplier Name:** {supplier_name}")
-        st.write(f"**Door Location:** {door_location}")
-        st.write(f"**TDU:** {tdu}")
-        st.write(f"**X Distance:** {x_distance}")
-        st.write(f"**Type of CAS:** {cas_type}")
 
 # --- MOD Closure Section ---
 st.markdown("## MOD Closure")
@@ -198,7 +173,32 @@ if st.button("Generate KIT Entry"):
     else:
         # Placeholder for actual logic
         st.success(f"✅ KIT entry created:\n\n📄 **Description:** {kit_description}\n📦 **Item:** {loose_item_name}\n🔗 **Linked to:** {equipment_unit}")
+    # --- DS Finder Section ---
+    st.markdown("## Design Solutions Finder")
+    
+    # Supplier Name Input
+    supplier_name = st.text_input("Enter Supplier Name:")
+    
+    # Door Location Input
+    door_location = st.text_input("Enter Door Location:")
+    
+    # TDU Input
+    tdu = st.text_input("Enter TDU:")
+    
+    # X Distance Input
+    x_distance = st.number_input("Enter X Distance:", min_value=0.0, format="%.2f")
+    
+    # Type of CAS Input (Select Box)
+    cas_type = st.selectbox("Select Type of CAS", ["Wall-mounted", "Floor-mounted"])
 
+    # Display the entered DS Finder details
+    if supplier_name or door_location or tdu or x_distance or cas_type:
+        st.write("### DS Finder Details")
+        st.write(f"**Supplier Name:** {supplier_name}")
+        st.write(f"**Door Location:** {door_location}")
+        st.write(f"**TDU:** {tdu}")
+        st.write(f"**X Distance:** {x_distance}")
+        st.write(f"**Type of CAS:** {cas_type}")
 
 st.markdown("---")
 st.info("This test app uses Mistral AI and Streamlit. Do not use this setup in production due to hardcoded keys and insecure SSL bypass.")
