@@ -3,26 +3,34 @@ import base64
 import io
 import httpx # Required for the MistralClient's internal HTTP operations
 from mistralai.client import MistralClient
-# REMOVED: from mistralai.models.chat_completion import ChatMessage # Removed this line
+import ssl # Import the ssl module for context patching
 
-# --- Mistral AI API Key Setup (Hardcoded for testing simplicity) ---
-# WARNING: This exposes your API key in your public code.
-# Use ONLY for temporary testing with a free/test API key that you don't care about exposing.
-api_key = "VYFuAzmpanni9GvQjQBoVuwRylMd7IOa" # <<< REPLACE THIS WITH YOUR REAL KEY <<<
+# --- Mistral AI API Key (Hardcoded for testing simplicity) ---
+# WARNING: This exposes your API key in public code. Use ONLY for temporary, free/test API keys.
+api_key = "VYFuAzmpanni9GvQjQBoVuwRylMd7IOa" # Your API key, hardcoded here.
 
-if api_key == "YOUR_ACTUAL_MISTRAL_AI_API_KEY_GOES_HERE" or not api_key:
-    st.error("Error: Mistral AI API Key is not set. Please replace 'YOUR_ACTUAL_MISTRAL_AI_API_KEY_GOES_HERE' in app.py with your key.")
-    st.stop()
+# --- AGGRESSIVE, INSECURE SSL BYPASS (LAST RESORT) ---
+# WARNING: This completely disables SSL certificate verification for ALL httpx connections
+# by patching the default SSL context. This is EXTREMELY INSECURE for production.
+# Use ONLY for temporary testing in controlled environments where you accept the risks.
+try:
+    # Attempt to create an unverified SSL context and make it the default for Python
+    # This might affect other secure connections in the Streamlit Cloud environment,
+    # but for a test app, it's the most direct way to bypass certificate issues.
+    _create_unverified_https_context = ssl._create_unverified_context
+    ssl._create_default_https_context = _create_unverified_https_context
+except AttributeError:
+    # Fallback for older Python versions or environments where _create_unverified_context
+    # might not be directly available, though less likely on Python 3.13.
+    pass
+# --- END AGGRESSIVE, INSECURE SSL BYPASS ---
 
-# --- Initialize MistralClient with Insecure SSL Bypass for Testing ---
-# WARNING: This disables SSL certificate verification and is INSECURE for production.
-# Use ONLY for temporary testing in controlled environments where you understand the risks.
-insecure_httpx_client = httpx.Client(verify=False)
 
-client = MistralClient(
-    api_key=api_key,
-    httpx_client=insecure_httpx_client
-)
+# --- Initialize MistralClient (without httpx_client or client_kwargs) ---
+# Since previous attempts with client_kwargs/httpx_client failed, we initialize
+# the client with basic arguments, relying on the global SSL patch above.
+client = MistralClient(api_key=api_key)
+
 
 # --- Define the Part Number Generation Logic (as text for the LLM) ---
 PN_LOGIC_PROMPT = """
