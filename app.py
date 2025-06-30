@@ -3,16 +3,20 @@ import base64
 import io
 import httpx # Required for the MistralClient's internal HTTP operations
 from mistralai.client import MistralClient
-from mistralai.models.chat_completion import ChatMessage # Reverted to correct path for models in v1.8.2
+# REMOVED: from mistralai.models.chat_completion import ChatMessage # Removed this line
 
 # --- Mistral AI API Key Setup (Hardcoded for testing simplicity) ---
 # WARNING: This exposes your API key in your public code.
 # Use ONLY for temporary testing with a free/test API key that you don't care about exposing.
-api_key = "VYFuAzmpanni9GvQjQBoVuwRylMd7IOa" # <<< REPLACE THIS WITH YOUR REAL KEY <<<
+api_key = "YOUR_ACTUAL_MISTRAL_AI_API_KEY_GOES_HERE" # <<< REPLACE THIS WITH YOUR REAL KEY <<<
+
+if api_key == "YOUR_ACTUAL_MISTRAL_AI_API_KEY_GOES_HERE" or not api_key:
+    st.error("Error: Mistral AI API Key is not set. Please replace 'YOUR_ACTUAL_MISTRAL_AI_API_KEY_GOES_HERE' in app.py with your key.")
+    st.stop()
 
 # --- Initialize MistralClient with Insecure SSL Bypass for Testing ---
 # WARNING: This disables SSL certificate verification and is INSECURE for production.
-# Use ONLY for temporary testing in controlled environments where you understand the the risks.
+# Use ONLY for temporary testing in controlled environments where you understand the risks.
 insecure_httpx_client = httpx.Client(verify=False)
 
 client = MistralClient(
@@ -94,15 +98,16 @@ if uploaded_file is not None:
 
     with st.spinner("Sending PDF to LLM and generating part numbers... (This may take a moment)"):
         try:
-            # Construct the messages for the Mistral API call
+            # Construct the messages for the Mistral API call using dictionaries
+            # This completely bypasses direct import of ChatMessage class
             messages = [
-                ChatMessage(
-                    role="user",
-                    content=[
-                        ChatMessage(type="text", text=PN_LOGIC_PROMPT),
-                        ChatMessage(type="image_url", image_url=f"data:application/pdf;base64,{base64_pdf}")
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": PN_LOGIC_PROMPT},
+                        {"type": "image_url", "image_url": f"data:application/pdf;base64,{base64_pdf}"}
                     ]
-                )
+                }
             ]
 
             # Make the API call
@@ -136,7 +141,6 @@ if uploaded_file is not None:
 
         except Exception as e:
             st.error(f"An error occurred during LLM processing: {e}")
-            # Simplified info for testing, removed API key hint here
             st.info("Ensure the PDF content is clear for the LLM to understand and the model is accessible.")
 
 st.markdown("---")
