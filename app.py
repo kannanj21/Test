@@ -3,7 +3,7 @@ import base64
 import io
 import httpx # Import httpx explicitly
 from mistralai.client import MistralClient
-from mistralai.models.chat_completion import ChatMessage
+from mistralai.models.chat import ChatMessage
 
 # --- Mistral AI API Key Setup ---
 # WARNING: Hardcoding API key is INSECURE for production.
