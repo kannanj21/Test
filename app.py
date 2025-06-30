@@ -125,7 +125,7 @@ if uploaded_file:
             st.info("Make sure your API key is valid and the PDF text is clean.")
 
     # --- DS Finder Section ---
-    st.markdown("## DS Finder")
+    st.markdown("## Design Solutions Finder")
     
     # Supplier Name Input
     supplier_name = st.text_input("Enter Supplier Name:")
