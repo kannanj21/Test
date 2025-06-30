@@ -3,7 +3,7 @@ import base64
 import io
 import httpx # Required for the MistralClient's internal HTTP operations
 from mistralai.client import MistralClient
-from mistralai.models.chat import ChatMessage # Corrected import path for ChatMessage
+from mistralai.models.chat_completion import ChatMessage # Reverted to correct path for models in v1.8.2
 
 # --- Mistral AI API Key Setup (Hardcoded for testing simplicity) ---
 # WARNING: This exposes your API key in your public code.
