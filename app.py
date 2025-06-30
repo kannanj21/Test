@@ -9,7 +9,7 @@ import ssl # Import the ssl module for context patching
 # WARNING: This exposes your API key in public code. Use ONLY for temporary, free/test API keys.
 api_key = "H8guEVvToOt8VEIRCZSgHgtAMGmVg0Dy" # Your API key, hardcoded here.
 
-if api_key == "YOUR_ACTUAL_MISTRAL_AI_API_KEY_GOES_HERE" or not api_key:
+if api_key == "H8guEVvToOt8VEIRCZSgHgtAMGmVg0Dy" or not api_key:
     st.error("Error: Mistral AI API Key is not set. Please replace 'YOUR_ACTUAL_MISTRAL_AI_API_KEY_GOES_HERE' in app.py with your key.")
     st.stop()
 
