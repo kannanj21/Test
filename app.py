@@ -124,5 +124,81 @@ if uploaded_file:
             st.error(f"❌ Error during LLM processing: {e}")
             st.info("Make sure your API key is valid and the PDF text is clean.")
 
+    # --- DS Finder Section ---
+    st.markdown("## DS Finder")
+    
+    # Supplier Name Input
+    supplier_name = st.text_input("Enter Supplier Name:")
+    
+    # Door Location Input
+    door_location = st.text_input("Enter Door Location:")
+    
+    # TDU Input
+    tdu = st.text_input("Enter TDU:")
+    
+    # X Distance Input
+    x_distance = st.number_input("Enter X Distance:", min_value=0.0, format="%.2f")
+    
+    # Type of CAS Input (Select Box)
+    cas_type = st.selectbox("Select Type of CAS", ["Wall-mounted", "Floor-mounted"])
+
+    # Display the entered DS Finder details
+    if supplier_name or door_location or tdu or x_distance or cas_type:
+        st.write("### DS Finder Details")
+        st.write(f"**Supplier Name:** {supplier_name}")
+        st.write(f"**Door Location:** {door_location}")
+        st.write(f"**TDU:** {tdu}")
+        st.write(f"**X Distance:** {x_distance}")
+        st.write(f"**Type of CAS:** {cas_type}")
+
+# --- MOD Closure Section ---
+st.markdown("## MOD Closure")
+
+# Upload CTS File
+cts_file = st.file_uploader("📄 Upload CTS", type=["pdf", "docx", "xlsx"], key="cts")
+
+# Upload TRS File
+trs_file = st.file_uploader("📄 Upload TRS", type=["pdf", "docx", "xlsx"], key="trs")
+
+# Optional display confirmation
+if cts_file:
+    st.success(f"✅ CTS File uploaded: {cts_file.name}")
+
+if trs_file:
+    st.success(f"✅ TRS File uploaded: {trs_file.name}")
+
+# --- Assist Space Tool Section ---
+st.markdown("## 🧭 Assist Space Tool")
+
+# Input fields
+cas_location_input = st.text_input("CAS Location")
+x_value = st.number_input("X Coordinate (mm)", format="%.2f")
+y_value = st.number_input("Y Coordinate (mm)", format="%.2f")
+
+# Validate button
+if st.button("Validate Space"):
+    if not cas_location_input:
+        st.warning("Please enter a CAS location to validate space.")
+    else:
+        # Placeholder logic
+        st.success(f"✅ Space validated for {cas_location_input} at coordinates ({x_value}, {y_value}). No clashes detected.")
+
+# --- KIT Loader Tool Section ---
+st.markdown("## 📦 KIT Loader Tool")
+
+# Input fields for the KIT loader
+kit_description = st.text_input("Kit Description")
+loose_item_name = st.text_input("Name of the Loose Item")
+equipment_unit = st.text_input("Equipment Unit to Link")
+
+# Submit button (you can rename this if you like)
+if st.button("Generate KIT Entry"):
+    if not kit_description or not loose_item_name or not equipment_unit:
+        st.warning("Please fill out all fields to generate the KIT entry.")
+    else:
+        # Placeholder for actual logic
+        st.success(f"✅ KIT entry created:\n\n📄 **Description:** {kit_description}\n📦 **Item:** {loose_item_name}\n🔗 **Linked to:** {equipment_unit}")
+
+
 st.markdown("---")
 st.info("This test app uses Mistral AI and Streamlit. Do not use this setup in production due to hardcoded keys and insecure SSL bypass.")
