@@ -8,7 +8,7 @@ from mistralai.client import MistralClient
 # --- Mistral AI API Key Setup (Hardcoded for testing simplicity) ---
 # WARNING: This exposes your API key in your public code.
 # Use ONLY for temporary testing with a free/test API key that you don't care about exposing.
-api_key = "YOUR_ACTUAL_MISTRAL_AI_API_KEY_GOES_HERE" # <<< REPLACE THIS WITH YOUR REAL KEY <<<
+api_key = "VYFuAzmpanni9GvQjQBoVuwRylMd7IOa" # <<< REPLACE THIS WITH YOUR REAL KEY <<<
 
 if api_key == "YOUR_ACTUAL_MISTRAL_AI_API_KEY_GOES_HERE" or not api_key:
     st.error("Error: Mistral AI API Key is not set. Please replace 'YOUR_ACTUAL_MISTRAL_AI_API_KEY_GOES_HERE' in app.py with your key.")
