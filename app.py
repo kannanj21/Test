@@ -1,32 +1,20 @@
 import streamlit as st
 import base64
 import io
-import httpx # Import httpx explicitly
+import httpx # Required for the MistralClient's internal HTTP operations
 from mistralai.client import MistralClient
+from mistralai.models.chat import ChatMessage # Corrected import path for ChatMessage
 
-
-
-# --- Mistral AI API Key Setup ---
-# WARNING: Hardcoding API key is INSECURE for production.
-# Use ONLY for temporary testing in controlled environments where you accept the risk of exposure.
-API_KEY_PLACEHOLDER = "YOUR_ACTUAL_MISTRAL_AI_API_KEY_GOES_HERE" # <<< REPLACE THIS WITH YOUR REAL KEY <<<
-
-if API_KEY_PLACEHOLDER == "YOUR_ACTUAL_MISTRAL_AI_API_KEY_GOES_HERE" or not API_KEY_PLACEHOLDER:
-    st.error("Error: Mistral AI API Key is not set. Please replace 'YOUR_ACTUAL_MISTRAL_AI_API_KEY_GOES_HERE' in app.py with your key.")
-    st.stop() # Stop the app if no key is found
-
-api_key = API_KEY_PLACEHOLDER # Use the hardcoded key
+# --- Mistral AI API Key Setup (Hardcoded for testing simplicity) ---
+# WARNING: This exposes your API key in your public code.
+# Use ONLY for temporary testing with a free/test API key that you don't care about exposing.
+api_key = "VYFuAzmpanni9GvQjQBoVuwRylMd7IOa" # <<< REPLACE THIS WITH YOUR REAL KEY <<<
 
 # --- Initialize MistralClient with Insecure SSL Bypass for Testing ---
 # WARNING: This disables SSL certificate verification and is INSECURE for production.
-# Use ONLY for temporary testing in controlled environments where you understand the risks.
-
-# Create an httpx.Client instance with SSL verification disabled.
-# This directly tells the underlying HTTP client to not verify certificates.
+# Use ONLY for temporary testing in controlled environments where you understand the the risks.
 insecure_httpx_client = httpx.Client(verify=False)
 
-# Pass this pre-configured httpx client to the MistralClient.
-# This ensures SSL verification is off for API calls.
 client = MistralClient(
     api_key=api_key,
     httpx_client=insecure_httpx_client
@@ -108,11 +96,11 @@ if uploaded_file is not None:
         try:
             # Construct the messages for the Mistral API call
             messages = [
-                mistralai.models.chat.ChatMessage(  # <-- FULLY QUALIFIED PATH HERE
+                ChatMessage(
                     role="user",
                     content=[
-                        mistralai.models.chat.ChatMessage(type="text", text=PN_LOGIC_PROMPT), # <-- FULLY QUALIFIED PATH HERE
-                        mistralai.models.chat.ChatMessage(type="image_url", image_url=f"data:application/pdf;base64,{base64_pdf}") # <-- FULLY QUALIFIED PATH HERE
+                        ChatMessage(type="text", text=PN_LOGIC_PROMPT),
+                        ChatMessage(type="image_url", image_url=f"data:application/pdf;base64,{base64_pdf}")
                     ]
                 )
             ]
@@ -148,7 +136,8 @@ if uploaded_file is not None:
 
         except Exception as e:
             st.error(f"An error occurred during LLM processing: {e}")
-            st.info("Ensure your Mistral API key is correct and the PDF content is clear for the LLM to understand.")
+            # Simplified info for testing, removed API key hint here
+            st.info("Ensure the PDF content is clear for the LLM to understand and the model is accessible.")
 
 st.markdown("---")
 st.info("This application leverages the Mistral AI API to interpret the PDF and generate part numbers based on the detailed rules provided in the prompt. "
