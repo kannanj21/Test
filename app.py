@@ -77,6 +77,11 @@ Your task is to:
 """
 
 # --- Streamlit UI ---
+
+# Add a huge heading at the top of the page
+st.markdown("<h1 style='text-align: center; font-size: 50px;'>Version AI</h1>", unsafe_allow_html=True)
+
+
 st.set_page_config(page_title="CAS Part Number Generator", layout="centered")
 st.title("🤖 CAS Part Number Generator")
 st.markdown("Upload a CAS PDF document. The app will extract text and generate part numbers using LLM logic.")
