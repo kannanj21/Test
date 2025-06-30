@@ -2,35 +2,26 @@ import streamlit as st
 import base64
 import io
 import httpx # Required for the MistralClient's internal HTTP operations
-from mistralai.client import MistralClient
-import ssl # Import the ssl module for context patching
+# Removed: from mistralai.client import MistralClient # This is the deprecated client
+from mistralai.models.chat import ChatMessage # Re-add ChatMessage import for dictionary alternative
+from mistralai.async_client import MistralClient as NewMistralClient # Import the new client
 
 # --- Mistral AI API Key (Hardcoded for testing simplicity) ---
-# WARNING: This exposes your API key in public code. Use ONLY for temporary, free/test API keys.
 api_key = "VYFuAzmpanni9GvQjQBoVuwRylMd7IOa" # Your API key, hardcoded here.
 
-# --- AGGRESSIVE, INSECURE SSL BYPASS (LAST RESORT) ---
-# WARNING: This completely disables SSL certificate verification for ALL httpx connections
-# by patching the default SSL context. This is EXTREMELY INSECURE for production.
-# Use ONLY for temporary testing in controlled environments where you accept the risks.
-try:
-    # Attempt to create an unverified SSL context and make it the default for Python
-    # This might affect other secure connections in the Streamlit Cloud environment,
-    # but for a test app, it's the most direct way to bypass certificate issues.
-    _create_unverified_https_context = ssl._create_unverified_context
-    ssl._create_default_https_context = _create_unverified_https_context
-except AttributeError:
-    # Fallback for older Python versions or environments where _create_unverified_context
-    # might not be directly available, though less likely on Python 3.13.
-    pass
-# --- END AGGRESSIVE, INSECURE SSL BYPASS ---
+if api_key == "YOUR_ACTUAL_MISTRAL_AI_API_KEY_GOES_HERE" or not api_key:
+    st.error("Error: Mistral AI API Key is not set. Please replace 'YOUR_ACTUAL_MISTRAL_AI_API_KEY_GOES_HERE' in app.py with your key.")
+    st.stop()
 
+# --- Initialize the NEW MistralClient with Insecure SSL Bypass for Testing ---
+# We use NewMistralClient to distinguish it from the old, deprecated client.
+# The 'httpx_client' argument *is* recognized by this new client.
+insecure_httpx_client = httpx.Client(verify=False)
 
-# --- Initialize MistralClient (without httpx_client or client_kwargs) ---
-# Since previous attempts with client_kwargs/httpx_client failed, we initialize
-# the client with basic arguments, relying on the global SSL patch above.
-client = MistralClient(api_key=api_key)
-
+client = NewMistralClient( # Use the new client here
+    api_key=api_key,
+    httpx_client=insecure_httpx_client
+)
 
 # --- Define the Part Number Generation Logic (as text for the LLM) ---
 PN_LOGIC_PROMPT = """
@@ -107,15 +98,14 @@ if uploaded_file is not None:
     with st.spinner("Sending PDF to LLM and generating part numbers... (This may take a moment)"):
         try:
             # Construct the messages for the Mistral API call using dictionaries
-            # This completely bypasses direct import of ChatMessage class
             messages = [
-                {
-                    "role": "user",
-                    "content": [
-                        {"type": "text", "text": PN_LOGIC_PROMPT},
-                        {"type": "image_url", "image_url": f"data:application/pdf;base64,{base64_pdf}"}
+                ChatMessage( # Use ChatMessage here from mistralai.models.chat
+                    role="user",
+                    content=[
+                        ChatMessage(type="text", text=PN_LOGIC_PROMPT),
+                        ChatMessage(type="image_url", image_url=f"data:application/pdf;base64,{base64_pdf}")
                     ]
-                }
+                )
             ]
 
             # Make the API call
@@ -149,7 +139,7 @@ if uploaded_file is not None:
 
         except Exception as e:
             st.error(f"An error occurred during LLM processing: {e}")
-            st.info("Ensure the PDF content is clear for the LLM to understand and the model is accessible.")
+            st.info("Ensure your Mistral API key is correct and the PDF content is clear for the LLM to understand.")
 
 st.markdown("---")
 st.info("This application leverages the Mistral AI API to interpret the PDF and generate part numbers based on the detailed rules provided in the prompt. "
