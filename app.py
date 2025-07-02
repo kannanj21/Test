@@ -18,6 +18,8 @@ except AttributeError:
 
 client = MistralClient(api_key=api_key)
 
+
+
 # --- Prompt Definition ---
 PN_LOGIC_PROMPT = """
 You are an expert system for generating 15-digit part numbers for Cabin Attendant Seats (CAS).
@@ -99,7 +101,7 @@ if uploaded_file:
         try:
             messages = [{"role": "user", "content": full_prompt}]
 
-            st.write("📤 Sending request to Mistral API...")  # shows in app
+            
             
             response = client.chat(
                 model="mistral-large-latest",
@@ -108,15 +110,14 @@ if uploaded_file:
                 response_format={"type": "json_object"},
             )
 
-            st.write("📥 Mistral API response object:")
-            st.write(response)  # dump full response
+            
             
             
             result = response.choices[0].message.content
 
-            st.write("🧠 Extracted response content:")
             
-            st.code(result)
+            
+           
 
 
             try:
