@@ -82,7 +82,8 @@ st.markdown("<h1 style='text-align: center; font-size: 50px;'>Version AI</h1>", 
 
 
 st.set_page_config(page_title="CAS Part Number Generator", layout="centered")
-st.title("🤖 CAS Part Number Generator")
+st.title("💺 CAS Part Number Generator")
+
 st.markdown("Upload a CAS PDF document. The app will extract text and generate part numbers using LLM logic.")
 
 uploaded_file = st.file_uploader("Upload CAS PDF Document", type="pdf")
@@ -149,7 +150,7 @@ if st.button("Validate Space"):
         st.success(f"✅ Space validated for {cas_location_input} at coordinates ({x_value}, {y_value}). No clashes detected.")
 
 
-st.markdown("## 📦 KIT Loader Tool")
+st.markdown("## 📦 KIT Loader")
 
 
 kit_description = st.text_input("Kit Description")
