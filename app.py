@@ -134,6 +134,34 @@ if uploaded_file:
             st.error(f"❌ Error during LLM processing: {e}")
             st.info("Make sure your API key is valid and the PDF text is clean.")
 
+st.markdown("## ❓ Need new models?")
+
+if 'part_numbers' in locals() and isinstance(part_numbers, dict):
+    st.markdown("Select **Yes** or **No** for each part number below:")
+
+    # Dictionary to hold user responses
+    model_requests = {}
+
+    for cas_id, pn in part_numbers.items():
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            st.markdown(f"**{cas_id}**: `{pn}`")
+        with col2:
+            choice = st.radio(
+                label=f"Need new model for {cas_id}?",
+                options=["No", "Yes"],
+                key=f"model_request_{cas_id}"
+            )
+            model_requests[cas_id] = choice
+
+    # Optional: Show summary
+    st.markdown("### 📝 Summary of Requests")
+    for cas_id, decision in model_requests.items():
+        st.write(f"**{cas_id}**: `{part_numbers[cas_id]}` → **{decision}**")
+
+else:
+    st.info("👆 Upload a PDF and generate part numbers first to use this section.")
+
 st.markdown("## 🧭 Assist Space Tool")
 
 
@@ -210,33 +238,7 @@ if cts_file:
 if trs_file:
     st.success(f"✅ TRS File uploaded: {trs_file.name}")
 
-st.markdown("## ❓ Need new models?")
 
-if 'part_numbers' in locals() and isinstance(part_numbers, dict):
-    st.markdown("Select **Yes** or **No** for each part number below:")
-
-    # Dictionary to hold user responses
-    model_requests = {}
-
-    for cas_id, pn in part_numbers.items():
-        col1, col2 = st.columns([2, 1])
-        with col1:
-            st.markdown(f"**{cas_id}**: `{pn}`")
-        with col2:
-            choice = st.radio(
-                label=f"Need new model for {cas_id}?",
-                options=["No", "Yes"],
-                key=f"model_request_{cas_id}"
-            )
-            model_requests[cas_id] = choice
-
-    # Optional: Show summary
-    st.markdown("### 📝 Summary of Requests")
-    for cas_id, decision in model_requests.items():
-        st.write(f"**{cas_id}**: `{part_numbers[cas_id]}` → **{decision}**")
-
-else:
-    st.info("👆 Upload a PDF and generate part numbers first to use this section.")
 
 
 
