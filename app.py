@@ -168,7 +168,7 @@ if st.button("Generate KIT Entry"):
 
 
 
-st.markdown("## Design Solutions Finder")
+st.markdown("## 🔍 Design Solutions Finder")
     
 
 supplier_name = st.text_input("Enter Supplier Name:")
