@@ -102,6 +102,8 @@ if uploaded_file:
         try:
             messages = [{"role": "user", "content": full_prompt}]
 
+            st.write("📤 Sending request to Mistral API...")  # shows in app
+            
             response = client.chat(
                 model="mistral-large-latest",
                 messages=messages,
@@ -109,7 +111,16 @@ if uploaded_file:
                 response_format={"type": "json_object"},
             )
 
+            st.write("📥 Mistral API response object:")
+            st.write(response)  # dump full response
+            
+            
             result = response.choices[0].message.content
+
+            st.write("🧠 Extracted response content:")
+            
+            st.code(result)
+
 
             try:
                 part_numbers = json.loads(result)
