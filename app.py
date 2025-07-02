@@ -133,6 +133,39 @@ if uploaded_file:
             st.error(f"❌ Error during LLM processing: {e}")
             st.info("Make sure your API key is valid and the PDF text is clean.")
 
+st.markdown("## 🧭 Assist Space Tool")
+
+
+cas_location_input = st.text_input("CAS Location")
+x_value = st.number_input("X Coordinate (mm)", format="%.2f")
+y_value = st.number_input("Y Coordinate (mm)", format="%.2f")
+
+
+if st.button("Validate Space"):
+    if not cas_location_input:
+        st.warning("Please enter a CAS location to validate space.")
+    else:
+        # Placeholder logic
+        st.success(f"✅ Space validated for {cas_location_input} at coordinates ({x_value}, {y_value}). No clashes detected.")
+
+
+st.markdown("## 📦 KIT Loader Tool")
+
+
+kit_description = st.text_input("Kit Description")
+loose_item_name = st.text_input("Name of the Loose Item")
+equipment_unit = st.text_input("Equipment Unit to Link")
+
+# Submit button (you can rename this if you like)
+if st.button("Generate KIT Entry"):
+    if not kit_description or not loose_item_name or not equipment_unit:
+        st.warning("Please fill out all fields to generate the KIT entry.")
+    else:
+        # Placeholder for actual logic
+        st.success(f"✅ KIT entry created:\n\n📄 **Description:** {kit_description}\n📦 **Item:** {loose_item_name}\n🔗 **Linked to:** {equipment_unit}")
+        
+
+
 
 st.markdown("## Design Solutions Finder")
     
@@ -177,36 +210,7 @@ if trs_file:
     st.success(f"✅ TRS File uploaded: {trs_file.name}")
 
 
-st.markdown("## 🧭 Assist Space Tool")
 
-
-cas_location_input = st.text_input("CAS Location")
-x_value = st.number_input("X Coordinate (mm)", format="%.2f")
-y_value = st.number_input("Y Coordinate (mm)", format="%.2f")
-
-
-if st.button("Validate Space"):
-    if not cas_location_input:
-        st.warning("Please enter a CAS location to validate space.")
-    else:
-        # Placeholder logic
-        st.success(f"✅ Space validated for {cas_location_input} at coordinates ({x_value}, {y_value}). No clashes detected.")
-
-
-st.markdown("## 📦 KIT Loader Tool")
-
-
-kit_description = st.text_input("Kit Description")
-loose_item_name = st.text_input("Name of the Loose Item")
-equipment_unit = st.text_input("Equipment Unit to Link")
-
-# Submit button (you can rename this if you like)
-if st.button("Generate KIT Entry"):
-    if not kit_description or not loose_item_name or not equipment_unit:
-        st.warning("Please fill out all fields to generate the KIT entry.")
-    else:
-        # Placeholder for actual logic
-        st.success(f"✅ KIT entry created:\n\n📄 **Description:** {kit_description}\n📦 **Item:** {loose_item_name}\n🔗 **Linked to:** {equipment_unit}")
 
 
 st.markdown("---")
